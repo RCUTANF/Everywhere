@@ -22,6 +22,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
+        ref: 'main'               
+        path: 'source-code'       
         fetch-depth: 0
         submodules: true
         lfs: true
@@ -32,13 +34,16 @@ jobs:
         dotnet-version: 10.0.x
 
     - name: Restore
+      working-directory: ./source-code
       run: dotnet restore src/Everywhere.Linux/Everywhere.Linux.csproj -r ${{ matrix.runtime }}
 
     - name: Publish
+      working-directory: ./source-code
       run: |
         dotnet publish src/Everywhere.Linux/Everywhere.Linux.csproj -c Release -r ${{ matrix.runtime }} -o ./publish -p:Version=${{ env.VERSION }} -p:SentryDsn=${{ secrets.SENTRY_DSN }}
 
     - name: Build Deb Package
+      working-directory: ./source-code
       run: |
         chmod +x ./src/Everywhere.Linux/packaging_deb.sh
         ./src/Everywhere.Linux/packaging_deb.sh ${{ matrix.runtime }} ${{ env.VERSION }} ./publish
@@ -55,5 +60,5 @@ jobs:
         name: Everywhere-Linux-${{ matrix.asset_name }}-Build-${{ env.VERSION }}
         # 指定需要上传的文件路径
         path: |
-          Everywhere-${{ matrix.asset_name }}-v${{ env.VERSION }}.deb
-          Releases/Everywhere-${{ matrix.asset_name }}-v${{ env.VERSION }}.AppImage
+          source-code/Everywhere-${{ matrix.asset_name }}-v${{ env.VERSION }}.deb
+          source-code/Releases/Everywhere-${{ matrix.asset_name }}-v${{ env.VERSION }}.AppImage
