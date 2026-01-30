@@ -35,7 +35,7 @@ jobs:
 
     - name: Restore
       working-directory: ./source-code
-      run: dotnet restore src/Everywhere.Linux/Everywhere.Linux.csproj -r ${{ matrix.runtime }}
+      run: dotnet restore Everywhere.Linux.slnf -r ${{ matrix.runtime }}
 
     - name: Publish
       working-directory: ./source-code
