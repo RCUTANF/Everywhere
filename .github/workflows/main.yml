@@ -49,6 +49,7 @@ jobs:
         ./src/Everywhere.Linux/packaging_deb.sh ${{ matrix.runtime }} ${{ env.VERSION }} ./publish
 
     - name: Build AppImage
+      working-directory: ./source-code
       run: |
         chmod +x build-appimage.sh
         ./build-appimage.sh ${{ matrix.runtime }} ${{ matrix.asset_name }} ./publish false ${{ env.VERSION }}
